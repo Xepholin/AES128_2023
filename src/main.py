@@ -7,9 +7,10 @@ if __name__ == "__main__":
 
     subkeys = KeyExpansion(word)
 
-    if len(example) == len(subkeys):
-        for i in range(11):
-            if example[i] == subkeys[i]:
-                print("valid")
-            else:
-                print("wrong: {} != {}, round {}".format(hex(example[i])[2:], hex(subkeys[i])[2:], i))
+    test = 0x000102030405060708090a0b0c0d0e0f
+
+    state = create_state(test)
+    state = ShiftRow(state)
+    state = SubBytes(state)
+    print_state(state)
+    
