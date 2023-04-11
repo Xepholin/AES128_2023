@@ -8,7 +8,7 @@ def SubBytes(state):
     return subState
 
 def ShiftRow(state):
-    rows = rotate_state(state)
+    rows = swap_column_row(state)
 
     rowState = []
     rotate_times = 0
@@ -21,4 +21,13 @@ def ShiftRow(state):
         rowState.append(rotated)
         rotate_times += 1
     
-    return rotate_state(rowState)
+    return swap_column_row(rowState)
+
+def MixColumns(state):
+    result = []
+
+    for column in state:
+        mixed = MixColumn_calcul(column)
+        result.append(mixed)
+    
+    return result
