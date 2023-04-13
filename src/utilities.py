@@ -165,7 +165,7 @@ def KeyScheduler(key):
     return subkeys
 
 
-def textASCII_to_hex(word):
+def ascii_to_hex(word):
     hexaWord = 0
     lword = len(word)
     for i in range(lword):
@@ -182,7 +182,7 @@ def create_state(word):
         if len(word) > 16:
             raise ValueError("Le bloc de lettres fait plus de 16 caractères.")
         
-        hexaWord = textASCII_to_hex(word)
+        hexaWord = ascii_to_hex(word)
     elif type(word) == int:
         if word > 2**128:
             raise ValueError("Le bloc de lettres fait plus de 16 caractères.")
@@ -217,7 +217,7 @@ def combine_state(state):
     return combine
 
 
-def print_state(state):
+def print_state_like(state):
     if type(state) == list:
         if len(state) != 4:
             raise ValueError("La taille de la liste ne correspond pas à 4 colonnes.")
@@ -282,16 +282,29 @@ def MixColumn_calcul(column):
 
             match i:
                 case 0:
-                    calcul = calcul ^ multip[column >> 8*(i+3) & 0xff]
+                    calcul = calcul ^ multip[column >> 8*(3-i) & 0xff]
                 case 1:
-                    calcul = calcul ^ multip[column >> 8*(i+1) & 0xff]
+                    calcul = calcul ^ multip[column >> 8*(3-i) & 0xff]
                 case 2:
-                    calcul = calcul ^ multip[column >> 8*(i-1) & 0xff]
+                    calcul = calcul ^ multip[column >> 8*(3-i) & 0xff]
                 case 3:
-                    calcul = calcul ^ multip[column >> 8*(i-3) & 0xff]
+                    calcul = calcul ^ multip[column >> 8*(3-i) & 0xff]
                 case _:
                     raise ValueError()
         
         result = result << 8 | calcul 
+
+    return result
+
+def HeSt_to_ascii(HeSt):
+    if type(HeSt) == list:
+        HeSt = combine_state(HeSt)
+    elif type(HeSt) != int:
+        raise TypeError("La transformation est faisable seulement sur une liste ayant les dimensions de state ou un int")
+
+    result = str()
+    
+    for i in range(120, -1, -8):
+        result += chr(HeSt >> i & 0xff)
 
     return result

@@ -46,13 +46,13 @@ def AddRoundKey(state, roundKey):
 
 def encrypt(message, key):
     if type(message) == str:
-        message = textASCII_to_hex(message)
+        message = ascii_to_hex(message)
     if type(message) == int:
         if message > 2**128:
             raise ValueError("Le bloc de lettres fait plus de 16 caractères.")
         
     state = message ^ key
-    
+
     subKeys = KeyScheduler(key)
     state = create_state(state)
 

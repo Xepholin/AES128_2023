@@ -6,7 +6,10 @@ if __name__ == "__main__":
 
     if enc == 0xc69f25d0025a9ef32393f63e2f05b747:
         print("valid")
-        print_state(enc)
+        print("-----------")
+        print_state_like(enc)
+        print("-----------")
+        print(HeSt_to_ascii(enc))
     else:
         print("false")
-        print_state(enc)
+        print_state_like(enc)
