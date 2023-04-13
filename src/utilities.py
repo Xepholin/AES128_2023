@@ -17,6 +17,7 @@ sbox = [
     0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16,
 ]
 
+
 rconbox = [
     0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36, 0x6c, 0xd8, 0xab, 0x4d, 0x9a,
     0x2f, 0x5e, 0xbc, 0x63, 0xc6, 0x97, 0x35, 0x6a, 0xd4, 0xb3, 0x7d, 0xfa, 0xef, 0xc5, 0x91, 0x39,
@@ -36,9 +37,11 @@ rconbox = [
     0x61, 0xc2, 0x9f, 0x25, 0x4a, 0x94, 0x33, 0x66, 0xcc, 0x83, 0x1d, 0x3a, 0x74, 0xe8, 0xcb, 0x8d
 ]
 
+
 multiplication_by_1 = [
     i for i in range(256)
 ]
+
 
 multiplication_by_2 = [
     0x00,0x02,0x04,0x06,0x08,0x0a,0x0c,0x0e,0x10,0x12,0x14,0x16,0x18,0x1a,0x1c,0x1e,
@@ -59,6 +62,7 @@ multiplication_by_2 = [
     0xfb,0xf9,0xff,0xfd,0xf3,0xf1,0xf7,0xf5,0xeb,0xe9,0xef,0xed,0xe3,0xe1,0xe7,0xe5
 ]
 
+
 multiplication_by_3 = [
     0x00,0x03,0x06,0x05,0x0c,0x0f,0x0a,0x09,0x18,0x1b,0x1e,0x1d,0x14,0x17,0x12,0x11,
     0x30,0x33,0x36,0x35,0x3c,0x3f,0x3a,0x39,0x28,0x2b,0x2e,0x2d,0x24,0x27,0x22,0x21,
@@ -77,6 +81,7 @@ multiplication_by_3 = [
     0x3b,0x38,0x3d,0x3e,0x37,0x34,0x31,0x32,0x23,0x20,0x25,0x26,0x2f,0x2c,0x29,0x2a,
     0x0b,0x08,0x0d,0x0e,0x07,0x04,0x01,0x02,0x13,0x10,0x15,0x16,0x1f,0x1c,0x19,0x1a
 ]
+
 
 multiplication_by_9 = [
     0x00,0x09,0x12,0x1b,0x24,0x2d,0x36,0x3f,0x48,0x41,0x5a,0x53,0x6c,0x65,0x7e,0x77,
@@ -97,6 +102,7 @@ multiplication_by_9 = [
     0x31,0x38,0x23,0x2a,0x15,0x1c,0x07,0x0e,0x79,0x70,0x6b,0x62,0x5d,0x54,0x4f,0x46
 ]
 
+
 def Rotword(word):
     if type(word) != int:
         raise ValueError("Le mot en entrée doit être un entier")
@@ -105,6 +111,7 @@ def Rotword(word):
     
     result = bin(word)[2:].zfill(32)
     return int(result[8:] + result[:8], 2)
+
 
 def Subword(word):
     if type(word) != int:
@@ -127,10 +134,18 @@ def Subword(word):
     
     return int(result, 2)
 
+
 def Rcon(i):
     return [rconbox[i], 0, 0, 0]
 
+
 def KeyScheduler(key):
+    if type(key) == int:
+        if key > 2**128:
+            raise ValueError("Le bloc de lettres fait plus de 16 caractères.")
+    else:
+        raise TypeError("La clé doit être un hexadécimal sur 32 bits.")
+
     subkeys = [key]
     previousKey = key
 
@@ -149,6 +164,7 @@ def KeyScheduler(key):
 
     return subkeys
 
+
 def textASCII_to_hex(word):
     hexaWord = 0
     lword = len(word)
@@ -159,6 +175,7 @@ def textASCII_to_hex(word):
         hexaWord = hexaWord << 8 | 0x7a     #0x7a = z en ASCII
 
     return hexaWord
+
 
 def create_state(word):
     if type(word) == str:
@@ -181,23 +198,53 @@ def create_state(word):
     
     return state
 
-def print_state(state):    
+
+def combine_state(state):
+    if type(state) != list:
+        raise TypeError("Le type en entrée doit être une liste")
+    elif len(state) != 4:
+        raise ValueError("La liste doit posséder 4 valeurs")
+    else:
+        for value in state:
+            if value > 2**32:
+                raise ValueError("La longueur de la colonne est supérieure au nombre de caractères normal.")
+
+
     combine = 0
     for value in state:
         combine = combine << 32 | value
+    
+    return combine
+
+
+def print_state(state):
+    if type(state) == list:
+        if len(state) != 4:
+            raise ValueError("La taille de la liste ne correspond pas à 4 colonnes.")
+        
+        for value in state:
+            if value > 2**32:
+                raise ValueError("La longueur de la colonne est supérieure au nombre de caractères normal.")
+            
+        combine = combine_state(state)
+    elif type(state) == int:
+        if state > 2**128:
+            raise ValueError("Le bloc de lettres fait plus de 16 caractères.")
+        
+        combine = state
+    else:
+        raise TypeError("L'affichage ne prend en compte seulement une liste contenant les 4 partie de mots en hexadécimal ou un entier sur 32 bits.")
 
     state = []
     for i in range(120, -1, -8):
         state.append(combine >> i & 0xff)
-
-    if len(state) != 16:
-        raise ValueError("La matrice ne sera pas de taille 4x4.")
     
     num_row = 4
     num_column = 4
     matrix = [[hex(state[i * num_row + j])[2:] for i in range(num_row)] for j in range(num_column)]
 
     print('\n'.join([''.join(['{:3}'.format(item.zfill(2)) for item in row]) for row in matrix]))
+
 
 def swap_column_row(state):
     rows = []
@@ -211,6 +258,7 @@ def swap_column_row(state):
         rows.append(result_row)
 
     return rows
+
 
 def MixColumn_calcul(column):
     calc_orders = [[2, 3, 1, 1], [1, 2, 3, 1], [1, 1, 2, 3], [3, 1, 1, 2]]

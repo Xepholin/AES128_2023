@@ -7,6 +7,7 @@ def SubBytes(state):
 
     return subState
 
+
 def ShiftRow(state):
     rows = swap_column_row(state)
 
@@ -23,6 +24,7 @@ def ShiftRow(state):
     
     return swap_column_row(rowState)
 
+
 def MixColumns(state):
     result = []
 
@@ -32,6 +34,7 @@ def MixColumns(state):
     
     return result
 
+
 def AddRoundKey(state, roundKey):
     word = 0
 
@@ -39,3 +42,28 @@ def AddRoundKey(state, roundKey):
         word = word << 32 | value
     
     return create_state(word ^ roundKey)
+
+
+def encrypt(message, key):
+    if type(message) == str:
+        message = textASCII_to_hex(message)
+    if type(message) == int:
+        if message > 2**128:
+            raise ValueError("Le bloc de lettres fait plus de 16 caractères.")
+        
+    state = message ^ key
+    
+    subKeys = KeyScheduler(key)
+    state = create_state(state)
+
+    for i in range(1, 10):
+        state = SubBytes(state)
+        state = ShiftRow(state)
+        state = MixColumns(state)
+        state = AddRoundKey(state, subKeys[i])
+    
+    state = SubBytes(state)
+    state = ShiftRow(state)
+    state = AddRoundKey(state, subKeys[10])
+
+    return combine_state(state)
