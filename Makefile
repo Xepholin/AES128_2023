@@ -1,5 +1,5 @@
 run:
-	python3 src/main.py
+	python3.11 src/main.py
 
 clean:
 	-rm -rf src/__pycache__

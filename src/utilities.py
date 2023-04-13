@@ -1,5 +1,3 @@
-from math import sqrt
-
 sbox = [
     0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76,
     0xca, 0x82, 0xc9, 0x7d, 0xfa, 0x59, 0x47, 0xf0, 0xad, 0xd4, 0xa2, 0xaf, 0x9c, 0xa4, 0x72, 0xc0,
@@ -132,9 +130,9 @@ def Subword(word):
 def Rcon(i):
     return [rconbox[i], 0, 0, 0]
 
-def KeyScheduler(roundKey):
-    subkeys = [roundKey]
-    previousKey = roundKey
+def KeyScheduler(key):
+    subkeys = [key]
+    previousKey = key
 
     for i in range(1, 11):
         rotated = Rotword(previousKey & 0xffffffff)
@@ -151,15 +149,39 @@ def KeyScheduler(roundKey):
 
     return subkeys
 
-def create_state(roundKey):
+def textASCII_to_hex(word):
+    hexaWord = 0
+    lword = len(word)
+    for i in range(lword):
+        hexaWord = hexaWord << 8 | ord(word[i])
+
+    for _ in range(16-lword):
+        hexaWord = hexaWord << 8 | 0x7a     #0x7a = z en ASCII
+
+    return hexaWord
+
+def create_state(word):
+    if type(word) == str:
+        if len(word) > 16:
+            raise ValueError("Le bloc de lettres fait plus de 16 caractères.")
+        
+        hexaWord = textASCII_to_hex(word)
+    elif type(word) == int:
+        if word > 2**128:
+            raise ValueError("Le bloc de lettres fait plus de 16 caractères.")
+        
+        hexaWord = word
+    else:
+        raise TypeError("Le mot en entrée doit être sous forme de chaîne de caractère ou un entier.")
+
     state = []
 
     for i in range(96, -1, -32):
-        state.append(roundKey >> i & 0xffffffff)
+        state.append(hexaWord >> i & 0xffffffff)
     
     return state
 
-def print_state(state):
+def print_state(state):    
     combine = 0
     for value in state:
         combine = combine << 32 | value
@@ -168,11 +190,11 @@ def print_state(state):
     for i in range(120, -1, -8):
         state.append(combine >> i & 0xff)
 
-    if sqrt(len(state)).is_integer() == False:
-        raise ValueError("La matrix ne pourra pas être carré.")
+    if len(state) != 16:
+        raise ValueError("La matrice ne sera pas de taille 4x4.")
     
-    num_row = int(sqrt(len(state)))
-    num_column = int(sqrt(len(state)))
+    num_row = 4
+    num_column = 4
     matrix = [[hex(state[i * num_row + j])[2:] for i in range(num_row)] for j in range(num_column)]
 
     print('\n'.join([''.join(['{:3}'.format(item.zfill(2)) for item in row]) for row in matrix]))
