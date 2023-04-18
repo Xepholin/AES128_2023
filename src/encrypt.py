@@ -29,7 +29,7 @@ def MixColumns(state):
     result = []
 
     for column in state:
-        mixed = MixColumn_calcul(column)
+        mixed = MixColumns_calcul(column)
         result.append(mixed)
     
     return result
