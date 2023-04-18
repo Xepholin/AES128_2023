@@ -1,5 +1,6 @@
 from utilities import *
 from encrypt import *
+from decrypt import *
 
 if __name__ == "__main__":
     enc = encrypt("theblockbreakers", 0x2b7e151628aed2a6abf7158809cf4f3c)
@@ -10,6 +11,9 @@ if __name__ == "__main__":
         print_state_like(enc)
         print("-----------")
         print(HeSt_to_ascii(enc))
+        print("--------------------------------")
+        dec = decrypt(enc, 0x2b7e151628aed2a6abf7158809cf4f3c)
+        print(HeSt_to_ascii(dec))
     else:
         print("false")
         print_state_like(enc)
