@@ -286,3 +286,14 @@ def HeSt_to_ascii(HeSt):
         result += chr(HeSt >> i & 0xff)
 
     return result
+
+def str_to_hex(word):
+    hexaWord = 0
+    lword = len(word)
+    for i in range(lword):
+        hexaWord = hexaWord << 8 | int(word[i], 16)
+
+    for _ in range(16-lword):
+        hexaWord = hexaWord << 8 | 0x7a     #0x7a = z en ASCII
+
+    return hexaWord

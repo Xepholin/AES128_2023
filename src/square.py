@@ -1,50 +1,7 @@
 from utilities import *
+from encrypt import *
 
-def SubBytes(state):
-    subState = []
-    for row in state:
-        subState.append(Subword(row))
-
-    return subState
-
-
-def ShiftRow(state):
-    rows = swap_column_row(state)
-
-    rowState = []
-    rotate_times = 0
-
-    for row in rows:
-        rotated = row
-        for _ in range(rotate_times):
-            rotated = Rotword(rotated)
-
-        rowState.append(rotated)
-        rotate_times += 1
-    
-    return swap_column_row(rowState)
-
-
-def MixColumns(state):
-    result = []
-
-    for column in state:
-        mixed = MixColumns_calcul(column)
-        result.append(mixed)
-    
-    return result
-
-
-def AddRoundKey(state, roundKey):
-    word = 0
-
-    for value in state:
-        word = word << 32 | value
-    
-    return create_state(word ^ roundKey)
-
-
-def encrypt(message, key):
+def encryptWithRounds(message, key, numberOfRound):
     if type(message) == str:
         message = ascii_to_hex(message)
     elif type(message) == int:
@@ -66,7 +23,7 @@ def encrypt(message, key):
     subKeys = KeyScheduler(key)
     state = create_state(state)
 
-    for i in range(1, 10):
+    for i in range(1, numberOfRound):
         state = SubBytes(state)
         state = ShiftRow(state)
         state = MixColumns(state)
@@ -74,6 +31,33 @@ def encrypt(message, key):
     
     state = SubBytes(state)
     state = ShiftRow(state)
-    state = AddRoundKey(state, subKeys[10])
+    state = AddRoundKey(state, subKeys[numberOfRound])
 
     return combine_state(state)
+
+def setup(key):
+    key = str_to_hex(key)
+
+    delta_set = []
+    for i in range(256):
+        delta_set.append(i << 120)
+
+    delta_enc = []
+
+    for delta in delta_set:
+        delta_enc.append(encryptWithRounds(delta, key, 3))
+    
+    return delta_enc
+
+def setup_test(key):
+    delta_enc = setup(key)
+    xor = 0
+
+    for i in range(120, -1, -8):
+        for delta in delta_enc:
+            xor ^= delta >> i & 0xff
+
+        if xor == 0:
+            print("valid")
+        else:
+            print("failed")
