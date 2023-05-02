@@ -1,5 +1,4 @@
 from utilities import ascii_to_hex, KeyScheduler, create_state, combine_state, swap_column_row
-from encrypt import AddRoundKey
 
 sbox = [
     0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76,
@@ -201,6 +200,14 @@ def MixColumnsInverse(state):
         result.append(mixed)
     
     return result
+
+def AddRoundKey(state, roundKey):
+    word = 0
+
+    for value in state:
+        word = word << 32 | value
+    
+    return create_state(word ^ roundKey)
 
 
 def decrypt(message, key):

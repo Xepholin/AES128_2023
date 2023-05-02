@@ -114,12 +114,31 @@ def Subword(word):
     
     return int(result, 2)
 
+def SubByteInverse(byte):
+    if type(byte) != int:
+        raise ValueError("Le mot en entrée doit être un entier")
+    elif byte > 0xff:
+        raise ValueError("Le mot en entrée doit être un entier sur 8 octets")
+    
+    byte = bin(byte)[2:].zfill(8)
+    result = ""
+
+
+    first = int(byte[:4], 2)
+    second = int(byte[4:], 2)
+
+    result = bin(sbox.index(first * 16 + second))[2:].zfill(8)
+    
+    return int(result, 2)
+
 
 def Rcon(i):
     return [rconbox[i], 0, 0, 0]
 
 
 def KeyScheduler(key):
+    if type(key) == str:
+        key = str_to_hex(key)
     if type(key) == int:
         if key > 2**128:
             raise ValueError("Le bloc de lettres fait plus de 16 caractères.")

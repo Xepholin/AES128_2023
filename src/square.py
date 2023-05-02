@@ -1,10 +1,11 @@
 from utilities import *
 from encrypt import *
+from decrypt import *
 
 def encryptWithRounds(message, key, numberOfRound):
     if type(message) == str:
         message = ascii_to_hex(message)
-    elif type(message) == int:
+    if type(message) == int:
         if message > 2**128:
             raise ValueError("Le bloc de lettres du message fait plus de 16 caractères.")
     else:
@@ -12,7 +13,7 @@ def encryptWithRounds(message, key, numberOfRound):
     
     if type(key) == str:
         key = ascii_to_hex(key)
-    elif type(key) == int:
+    if type(key) == int:
         if key > 2**128:
             raise ValueError("Le bloc de lettres de la clé fait plus de 16 caractères.")
     else:
@@ -45,19 +46,26 @@ def setup(key):
     delta_enc = []
 
     for delta in delta_set:
-        delta_enc.append(encryptWithRounds(delta, key, 3))
+        delta_enc.append(encryptWithRounds(delta, key, 4))
     
     return delta_enc
 
-def setup_test(key):
-    delta_enc = setup(key)
-    xor = 0
+def reverseState(key_guess, position, delta_set):
+    reverse_set = []
 
-    for i in range(120, -1, -8):
-        for delta in delta_enc:
-            xor ^= delta >> i & 0xff
+    for state in delta_set:
+        byte = state >> (15 - position) * 8 & 0xff
+        byte ^= key_guess
+        byte = SubByteInverse(byte)
+        
+        reverse_set.append(byte)
 
-        if xor == 0:
-            print("valid")
-        else:
-            print("failed")
+    return reverse_set
+
+def checkKeyGuess(key_guess, reversed_bytes):
+    result = 0
+
+    for byte in reversed_bytes:
+        result ^= byte
+
+    return result == 0
