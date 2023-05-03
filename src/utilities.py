@@ -293,6 +293,7 @@ def MixColumns_calcul(column):
 
     return result
 
+
 def HeSt_to_ascii(HeSt):
     if type(HeSt) == list:
         HeSt = combine_state(HeSt)
@@ -305,6 +306,7 @@ def HeSt_to_ascii(HeSt):
         result += chr(HeSt >> i & 0xff)
 
     return result
+
 
 def str_to_hex(word):
     hexaWord = 0

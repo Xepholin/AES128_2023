@@ -36,12 +36,13 @@ def encryptWithRounds(message, key, numberOfRound):
 
     return combine_state(state)
 
-def setup(key):
+
+def setup(key, delta_position):
     key = str_to_hex(key)
 
     delta_set = []
     for i in range(256):
-        delta_set.append(i << 120)
+        delta_set.append(i << (15 - delta_position) * 8)
 
     delta_enc = []
 
@@ -49,6 +50,7 @@ def setup(key):
         delta_enc.append(encryptWithRounds(delta, key, 4))
     
     return delta_enc
+
 
 def reverseState(key_guess, position, delta_set):
     reverse_set = []
@@ -62,10 +64,52 @@ def reverseState(key_guess, position, delta_set):
 
     return reverse_set
 
-def checkKeyGuess(key_guess, reversed_bytes):
+
+def checkKeyGuess(reversed_bytes):
     result = 0
 
     for byte in reversed_bytes:
         result ^= byte
 
     return result == 0
+
+
+def search_subKey4(delta_set):
+    guessed = [set() for _ in range(16)]
+    
+    for i in range(16):
+        for j in range(256):
+            reverse_set = reverseState(j, i, delta_set)
+
+            if checkKeyGuess(reverse_set):
+                guessed[i].add(j)
+    
+    return guessed
+
+
+def find_subKey4(masterKey):
+    result = 0
+    previous_guessed = search_subKey4(setup(masterKey, 0))
+
+    for i in range(1, 100):
+        delta_set = setup(masterKey, i)
+        guessed = search_subKey4(delta_set)
+
+        count = 0
+        for i in range(16):
+            guessed[i] = guessed[i] & previous_guessed[i]
+
+            if len(guessed[i]) == 1:
+                count += 1
+        
+        if count == 16:
+            break
+
+        previous_guessed = guessed
+
+    guessed = [byte.pop() for byte in guessed]
+
+    for guessed_byte in guessed:
+        result = result << 8 | guessed_byte
+
+    return result
