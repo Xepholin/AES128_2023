@@ -2,54 +2,7 @@ from utilities import *
 from encrypt import *
 from decrypt import *
 
-def encryptWithRounds(message, key, numberOfRound):
-    if type(message) == str:
-        message = ascii_to_hex(message)
-    if type(message) == int:
-        if message > 2**128:
-            raise ValueError("Le bloc de lettres du message fait plus de 16 caractères.")
-    else:
-        TypeError("Le type de la variable du message n'est pas bon, str ou int seulement")
-    
-    if type(key) == str:
-        key = ascii_to_hex(key)
-    if type(key) == int:
-        if key > 2**128:
-            raise ValueError("Le bloc de lettres de la clé fait plus de 16 caractères.")
-    else:
-        TypeError("Le type de la variable du message n'est pas bon, str ou int seulement")
-        
-    state = message ^ key
-
-    subKeys = KeyScheduler(key)
-    state = create_state(state)
-
-    for i in range(1, numberOfRound):
-        state = SubBytes(state)
-        state = ShiftRow(state)
-        state = MixColumns(state)
-        state = AddRoundKey(state, subKeys[i])
-    
-    state = SubBytes(state)
-    state = ShiftRow(state)
-    state = AddRoundKey(state, subKeys[numberOfRound])
-
-    return combine_state(state)
-
-
-def setup(key, delta_position):
-    key = str_to_hex(key)
-
-    delta_set = []
-    for i in range(256):
-        delta_set.append(i << (15 - delta_position) * 8)
-
-    delta_enc = []
-
-    for delta in delta_set:
-        delta_enc.append(encryptWithRounds(delta, key, 4))
-    
-    return delta_enc
+import settings
 
 
 def reverseState(key_guess, position, delta_set):
@@ -86,13 +39,16 @@ def search_subKey4(delta_set):
     
     return guessed
 
+def secret_enc_delta(position):
+    return settings.create_delta(settings.secret_key, position)
 
-def find_subKey4(masterKey):
+
+def find_subKey4():
     result = 0
-    previous_guessed = search_subKey4(setup(masterKey, 0))
+    previous_guessed = search_subKey4(secret_enc_delta(0))
 
     for i in range(1, 100):
-        delta_set = setup(masterKey, i)
+        delta_set = secret_enc_delta(i)
         guessed = search_subKey4(delta_set)
 
         count = 0
@@ -113,3 +69,37 @@ def find_subKey4(masterKey):
         result = result << 8 | guessed_byte
 
     return result
+
+
+def InvertKeyScheduler(round, key):
+    if type(key) == str:
+        key = str_to_hex(key)
+    if type(key) == int:
+        if key > 2**128:
+            raise ValueError("Le bloc de lettres fait plus de 16 caractères.")
+    else:
+        raise TypeError("La clé doit être un hexadécimal sur 32 bits.")
+
+    for i in range(round, 0, -1):
+        previousKey = 0
+        
+        for j in range(2, -1, -1):
+            previousKey = previousKey << 32 | (key >> j * 32 & 0xffffffff) ^ (key >> (j+1) * 32 & 0xffffffff)
+
+        rotated = Rotword(previousKey & 0xffffffff)
+        subed = Subword(rotated)
+        rxored = key >> 96 ^ (Rcon(i)[0] << 24)
+        xored = (subed ^ rxored) << 96
+        
+        previousKey = previousKey | xored
+
+        key = previousKey
+
+    return key
+
+
+def square4():
+    subKey4 = find_subKey4()
+    masyerKey = InvertKeyScheduler(4, subKey4)
+
+    return hex(masyerKey)[2:]

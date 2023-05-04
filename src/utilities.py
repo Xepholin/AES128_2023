@@ -151,9 +151,9 @@ def KeyScheduler(key):
     for i in range(1, 11):
         rotated = Rotword(previousKey & 0xffffffff)
         subed = Subword(rotated)
-        xored = subed ^ ((previousKey & (0xffffffff << 24*4)) >> 96)
+        xored = subed ^ ((previousKey >> 96))
         rxored = xored ^ Rcon(i)[0] << 24
-
+        
         subKey = rxored << 32 | ((previousKey >> 64 & 0xffffffff) ^ rxored)
         subKey = subKey << 32 | ((previousKey >> 32 & 0xffffffff) ^ subKey & 0xffffffff)
         subKey = subKey << 32 | ((previousKey & 0xffffffff) ^ subKey & 0xffffffff)

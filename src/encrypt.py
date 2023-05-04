@@ -77,3 +77,38 @@ def encrypt(message, key):
     state = AddRoundKey(state, subKeys[10])
 
     return combine_state(state)
+
+
+def encryptWithRounds(message, key, numberOfRound):
+    if type(message) == str:
+        message = ascii_to_hex(message)
+    if type(message) == int:
+        if message > 2**128:
+            raise ValueError("Le bloc de lettres du message fait plus de 16 caractères.")
+    else:
+        TypeError("Le type de la variable du message n'est pas bon, str ou int seulement")
+    
+    if type(key) == str:
+        key = ascii_to_hex(key)
+    if type(key) == int:
+        if key > 2**128:
+            raise ValueError("Le bloc de lettres de la clé fait plus de 16 caractères.")
+    else:
+        TypeError("Le type de la variable du message n'est pas bon, str ou int seulement")
+        
+    state = message ^ key
+
+    subKeys = KeyScheduler(key)
+    state = create_state(state)
+
+    for i in range(1, numberOfRound):
+        state = SubBytes(state)
+        state = ShiftRow(state)
+        state = MixColumns(state)
+        state = AddRoundKey(state, subKeys[i])
+    
+    state = SubBytes(state)
+    state = ShiftRow(state)
+    state = AddRoundKey(state, subKeys[numberOfRound])
+
+    return combine_state(state)
