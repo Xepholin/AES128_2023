@@ -1,8 +1,47 @@
-from utilities import *
-from encrypt import *
-from decrypt import *
-
+from constants import SBOX
 import settings
+
+from tools import str_to_hex, Rotword, Subword, Rcon
+from encrypt import encryptWithRounds
+
+
+def SubByteInverse(byte):
+    if type(byte) != int:
+        raise ValueError("Le mot en entrée doit être un entier")
+    elif byte > 0xff:
+        raise ValueError("Le mot en entrée doit être un entier sur 8 octets")
+    
+    byte = bin(byte)[2:].zfill(8)
+    result = ""
+
+
+    first = int(byte[:4], 2)
+    second = int(byte[4:], 2)
+
+    result = bin(SBOX.index(first * 16 + second))[2:].zfill(8)
+    
+    return int(result, 2)
+
+
+def create_delta(key, delta_position):
+    if type(key) == str:
+        key = str_to_hex(key)
+    if type(key) == int:
+        if key > 2**128:
+            raise ValueError("Le bloc de lettres fait plus de 16 caractères.")
+    else:
+        raise TypeError("La clé doit être un hexadécimal sur 32 bits.")
+
+    delta_set = []
+    for i in range(256):
+        delta_set.append(i << (15 - delta_position) * 8)
+
+    delta_enc = []
+
+    for delta in delta_set:
+        delta_enc.append(encryptWithRounds(delta, key, 4))
+    
+    return delta_enc
 
 
 def reverseState(key_guess, position, delta_set):
@@ -40,7 +79,7 @@ def search_subKey4(delta_set):
     return guessed
 
 def secret_enc_delta(position):
-    return settings.create_delta(settings.secret_key, position)
+    return create_delta(settings.secret_key, position)
 
 
 def find_subKey4():

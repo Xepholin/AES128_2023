@@ -1,4 +1,6 @@
-from utilities import *
+from tools import Subword, swap_column_row, Rotword, MixColumns_calcul, KeyScheduler, AddRoundKey
+from tools import create_state, combine_state, ascii_to_hex
+
 
 def SubBytes(state):
     subState = []
@@ -33,15 +35,6 @@ def MixColumns(state):
         result.append(mixed)
     
     return result
-
-
-def AddRoundKey(state, roundKey):
-    word = 0
-
-    for value in state:
-        word = word << 32 | value
-    
-    return create_state(word ^ roundKey)
 
 
 def encrypt(message, key):
