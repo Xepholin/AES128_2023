@@ -43,6 +43,14 @@ def decrypt(message, key):
     if type(message) == int:
         if message > 2**128:
             raise ValueError("Le bloc de lettres fait plus de 16 caractères.")
+        
+    if type(key) == str:
+        key = ascii_to_hex(key)
+    if type(key) == int:
+        if key > 2**128:
+            raise ValueError("Le bloc de lettres de la clé fait plus de 16 caractères.")
+    else:
+        TypeError("Le type de la variable du message n'est pas bon, str ou int seulement")
 
     subKeys = KeyScheduler(key)
     state = create_state(message)
@@ -61,4 +69,4 @@ def decrypt(message, key):
 
     state ^= key
     
-    return state
+    return hex(state)[2:]

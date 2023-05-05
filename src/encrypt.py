@@ -40,7 +40,7 @@ def MixColumns(state):
 def encrypt(message, key):
     if type(message) == str:
         message = ascii_to_hex(message)
-    elif type(message) == int:
+    if type(message) == int:
         if message > 2**128:
             raise ValueError("Le bloc de lettres du message fait plus de 16 caractères.")
     else:
@@ -48,7 +48,7 @@ def encrypt(message, key):
     
     if type(key) == str:
         key = ascii_to_hex(key)
-    elif type(key) == int:
+    if type(key) == int:
         if key > 2**128:
             raise ValueError("Le bloc de lettres de la clé fait plus de 16 caractères.")
     else:
@@ -69,7 +69,7 @@ def encrypt(message, key):
     state = ShiftRow(state)
     state = AddRoundKey(state, subKeys[10])
 
-    return combine_state(state)
+    return hex(combine_state(state))[2:]
 
 
 def encryptWithRounds(message, key, numberOfRound):
@@ -104,4 +104,4 @@ def encryptWithRounds(message, key, numberOfRound):
     state = ShiftRow(state)
     state = AddRoundKey(state, subKeys[numberOfRound])
 
-    return combine_state(state)
+    return hex(combine_state(state))[2:]
