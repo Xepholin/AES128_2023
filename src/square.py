@@ -37,9 +37,10 @@ def create_delta(key, delta_position):
         delta_set.append(i << (15 - delta_position) * 8)
 
     delta_enc = []
-
+    
     for delta in delta_set:
-        delta_enc.append(encryptWithRounds(delta, key, 4))
+        encrypted = int(encryptWithRounds(delta, key, 4), 16)
+        delta_enc.append(encrypted)
     
     return delta_enc
 
@@ -91,10 +92,10 @@ def find_subKey4():
         guessed = search_subKey4(delta_set)
 
         count = 0
-        for i in range(16):
-            guessed[i] = guessed[i] & previous_guessed[i]
+        for j in range(16):
+            guessed[j] = guessed[j] & previous_guessed[j]
 
-            if len(guessed[i]) == 1:
+            if len(guessed[j]) == 1:
                 count += 1
         
         if count == 16:
@@ -142,3 +143,50 @@ def square4():
     masyerKey = InvertKeyScheduler(4, subKey4)
 
     return hex(masyerKey)[2:]
+
+
+def secret_enc_delta_test(key, position):
+    return create_delta(key, position)
+
+
+def find_subKey4_test(key):
+    if type(key) == str:
+        key = str_to_hex(key)
+    if type(key) == int:
+        if key > 2**128:
+            raise ValueError("Le bloc de lettres fait plus de 16 caractères.")
+    else:
+        raise TypeError("La clé doit être un hexadécimal sur 32 bits.")
+    
+    result = 0
+    previous_guessed = search_subKey4(secret_enc_delta_test(key, 0))
+
+    for i in range(1, 100):
+        delta_set = secret_enc_delta_test(key, i)
+        guessed = search_subKey4(delta_set)
+
+        count = 0
+        for i in range(16):
+            guessed[i] = guessed[i] & previous_guessed[i]
+
+            if len(guessed[i]) == 1:
+                count += 1
+        
+        if count == 16:
+            break
+
+        previous_guessed = guessed
+
+    guessed = [byte.pop() for byte in guessed]
+
+    for guessed_byte in guessed:
+        result = result << 8 | guessed_byte
+
+    return result
+
+
+def square4_test(key):
+    subKey4 = find_subKey4_test(key)
+    masterKey = InvertKeyScheduler(4, subKey4)
+
+    return hex(masterKey)[2:]

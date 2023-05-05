@@ -15,14 +15,14 @@ def ascii_to_hex(word):
     return hexaWord
 
 
-def HeSt_to_ascii(HeSt):
-    if type(HeSt) != int:
+def hex32_to_ascii(hexa):
+    if type(hexa) != int:
         raise TypeError("La transformation est faisable seulement sur un entier sous la forme 0xffffffffffffffff")
 
     result = str()
     
     for i in range(120, -1, -8):
-        result += chr(HeSt >> i & 0xff)
+        result += chr(hexa >> i & 0xff)
 
     return result
 
@@ -141,7 +141,7 @@ def create_state(word):
             raise ValueError("Le bloc de lettres fait plus de 16 caractères.")
         
         hexaWord = ascii_to_hex(word)
-    elif type(word) == int:
+    if type(word) == int:
         if word > 2**128:
             raise ValueError("Le bloc de lettres fait plus de 16 caractères.")
         
