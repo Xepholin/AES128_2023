@@ -1,7 +1,7 @@
 from constants import SBOX
 import settings
 
-from tools import str_to_hex, Rotword, Subword, Rcon
+from tools import str_to_hex32, Rotword, Subword, Rcon
 from encrypt import encryptWithRounds
 
 
@@ -25,7 +25,7 @@ def SubByteInverse(byte):
 
 def create_delta(key, delta_position):
     if type(key) == str:
-        key = str_to_hex(key)
+        key = str_to_hex32(key)
     if type(key) == int:
         if key > 2**128:
             raise ValueError("Le bloc de lettres fait plus de 16 caractères.")
@@ -113,7 +113,7 @@ def find_subKey4():
 
 def InvertKeyScheduler(round, key):
     if type(key) == str:
-        key = str_to_hex(key)
+        key = str_to_hex32(key)
     if type(key) == int:
         if key > 2**128:
             raise ValueError("Le bloc de lettres fait plus de 16 caractères.")
@@ -151,7 +151,7 @@ def secret_enc_delta_test(key, position):
 
 def find_subKey4_test(key):
     if type(key) == str:
-        key = str_to_hex(key)
+        key = str_to_hex32(key)
     if type(key) == int:
         if key > 2**128:
             raise ValueError("Le bloc de lettres fait plus de 16 caractères.")

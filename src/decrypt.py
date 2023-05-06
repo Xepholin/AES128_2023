@@ -1,5 +1,5 @@
 from tools import swap_column_row, SubwordReverse, RotwordReverse, MixColumnsReverse_calcul, KeyScheduler
-from tools import create_state, AddRoundKey, combine_state, ascii_to_hex
+from tools import create_state, AddRoundKey, combine_state, ascii_to_hex32
 
 
 def SubBytesReverse(state):
@@ -39,13 +39,13 @@ def MixColumnsReverse(state):
 
 def decrypt(message, key):
     if type(message) == str:
-        message = ascii_to_hex(message)
+        message = ascii_to_hex32(message)
     if type(message) == int:
         if message > 2**128:
             raise ValueError("Le bloc de lettres fait plus de 16 caractères.")
         
     if type(key) == str:
-        key = ascii_to_hex(key)
+        key = ascii_to_hex32(key)
     if type(key) == int:
         if key > 2**128:
             raise ValueError("Le bloc de lettres de la clé fait plus de 16 caractères.")

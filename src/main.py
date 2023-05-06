@@ -1,6 +1,6 @@
 import settings
 
-from tools import ascii_to_hex, hex32_to_ascii
+from tools import conv_msg_key, hex32_to_ascii
 from encrypt import encrypt
 from decrypt import decrypt
 from square import square4
@@ -14,7 +14,7 @@ def print_state_like(state):
         
         combine = state
     else:
-        raise TypeError("L'affichage ne prend en compte seulement une liste contenant les 4 partie de mots en hexadécimal ou un entier sur 32 bits.")
+        raise TypeError("L'affichage ne prend en compte seulement un entier sous forme d'un hexadécimal contenant 32 bits.")
 
     state = []
     for i in range(120, -1, -8):
@@ -27,8 +27,8 @@ def print_state_like(state):
     print('\n'.join([''.join(['{:3}'.format(item.zfill(2)) for item in row]) for row in matrix]))
 
 
-def parser_init():
-    parser = argparse.ArgumentParser(prog="AES128", description="AES128 : Chiffrement / Déchiffrement / Attaque intégral AES128(4).", usage='main.py {encrypt,decrypt,attack} message clé (si chiffrement ou déchiffrement)\n\nLe mode "attack" nécessite une modification manuelle de la varaible "secret_key" dans le fichier "settings.py".')
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(prog="AES128", description="AES128 : Chiffrement / Déchiffrement / Attaque intégral AES128(4).", usage='main.py {encrypt,decrypt,attack} message clé (si chiffrement ou déchiffrement)\n\nLe mode "attack" nécessite une modification manuelle de la variable "secret_key" dans le fichier "settings.py".')
 
     subparsers = parser.add_subparsers(dest="actions", required=True)
 
@@ -43,27 +43,6 @@ def parser_init():
     parser_decrypt.add_argument('key', help="Clé à utiliser")
 
     subparsers.add_parser('attack', help='Attaque intégral')
-
-    return parser
-
-def conv_msg_key(message, key):
-    if len(message) == 32:
-        message = int(message, 16)
-    if len(key) == 32:
-        key = int(key, 16)
-
-    if type(message) != int:
-        if len(message) == 16:
-            message = ascii_to_hex(message)
-    if type(key) != int:
-        if len(key) == 16:
-            key = ascii_to_hex(key)
-    
-    return message, key
-
-if __name__ == "__main__":
-    settings.init()
-    parser = parser_init()
 
     args = parser.parse_args()
 
@@ -81,6 +60,7 @@ if __name__ == "__main__":
                 result = hex32_to_ascii(int(result, 16))
 
         case "attack":
+            settings.init()
             result = square4()
             
         case _:

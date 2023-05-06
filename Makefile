@@ -4,7 +4,7 @@ run:
 	python3.11 src/main.py attack
 
 test:
-	python3.11 src/unittests.py
+	python3.11 src/unittests.py -v
 
 clean:
 	-rm -rf src/__pycache__

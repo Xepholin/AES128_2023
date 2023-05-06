@@ -1,5 +1,5 @@
 from tools import Subword, swap_column_row, Rotword, MixColumns_calcul, KeyScheduler, AddRoundKey
-from tools import create_state, combine_state, ascii_to_hex
+from tools import create_state, combine_state, ascii_to_hex32
 
 
 def SubBytes(state):
@@ -39,7 +39,7 @@ def MixColumns(state):
 
 def encrypt(message, key):
     if type(message) == str:
-        message = ascii_to_hex(message)
+        message = ascii_to_hex32(message)
     if type(message) == int:
         if message > 2**128:
             raise ValueError("Le bloc de lettres du message fait plus de 16 caractères.")
@@ -47,7 +47,7 @@ def encrypt(message, key):
         TypeError("Le type de la variable du message n'est pas bon, str ou int seulement")
     
     if type(key) == str:
-        key = ascii_to_hex(key)
+        key = ascii_to_hex32(key)
     if type(key) == int:
         if key > 2**128:
             raise ValueError("Le bloc de lettres de la clé fait plus de 16 caractères.")
@@ -74,7 +74,7 @@ def encrypt(message, key):
 
 def encryptWithRounds(message, key, numberOfRound):
     if type(message) == str:
-        message = ascii_to_hex(message)
+        message = ascii_to_hex32(message)
     if type(message) == int:
         if message > 2**128:
             raise ValueError("Le bloc de lettres du message fait plus de 16 caractères.")
@@ -82,7 +82,7 @@ def encryptWithRounds(message, key, numberOfRound):
         TypeError("Le type de la variable du message n'est pas bon, str ou int seulement")
     
     if type(key) == str:
-        key = ascii_to_hex(key)
+        key = ascii_to_hex32(key)
     if type(key) == int:
         if key > 2**128:
             raise ValueError("Le bloc de lettres de la clé fait plus de 16 caractères.")
