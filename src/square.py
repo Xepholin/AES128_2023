@@ -246,7 +246,7 @@ def InvertKeyScheduler(round, key):
     return key
 
 
-def square4():
+def Square4():
 
     """
     Effectue l'attaque carré sur l'AES128 à 4 tours avec la clé secrète présent dans le fichier settings.py.

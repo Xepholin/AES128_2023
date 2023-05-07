@@ -11,6 +11,8 @@ Un Makefile est disponible pour faire les commandes par défaut, utiliser la com
     Pour lancer les tests unitaires:
         make test | python src/unittests.py
 
+Les commandes du Makefile devront être modifié en fonction de votre machine.
+
 Sinon, pour l'utilisation du programme:
 
     Pour chiffrer un message:
@@ -21,6 +23,7 @@ Sinon, pour l'utilisation du programme:
 
     Pour l'attaque:
         python src/main.py attack
+        
 L'attaque utilise la clé secrète présente dans le fichier ``settings.py``, si vous voulez la modifier, changer simplement la valeur de la variable "secret_key" à la ligne 8.<br />
 
 La clé secrète doit être un entier, équivalent à un hexadécimal possédant 32 bits ou moins, vous pouvez prendre comme exemple les clés ci-dessous, qui sont des clés possibles:
