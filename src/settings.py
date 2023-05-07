@@ -1,4 +1,9 @@
 def init():
+
+    """
+    Initialisation de la clé secrèete pour l'attaque.
+    """
+
     global secret_key
     secret_key = 0x2b7e151628aed2a6abf7158809cf4f3c
 

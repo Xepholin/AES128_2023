@@ -68,16 +68,16 @@ def checkKeyGuess(reversed_bytes):
 
 
 def search_subKey4(delta_set):
-    guessed = [set() for _ in range(16)]
+    guess = [set() for _ in range(16)]
     
     for i in range(16):
         for j in range(256):
             reverse_set = reverseState(j, i, delta_set)
 
             if checkKeyGuess(reverse_set):
-                guessed[i].add(j)
+                guess[i].add(j)
     
-    return guessed
+    return guess
 
 def secret_enc_delta(position):
     return create_delta(settings.secret_key, position)
@@ -85,28 +85,28 @@ def secret_enc_delta(position):
 
 def find_subKey4():
     result = 0
-    previous_guessed = search_subKey4(secret_enc_delta(0))
+    previous_guess = search_subKey4(secret_enc_delta(0))
 
     for i in range(1, 100):
         delta_set = secret_enc_delta(i)
-        guessed = search_subKey4(delta_set)
+        guess = search_subKey4(delta_set)
 
         count = 0
         for j in range(16):
-            guessed[j] = guessed[j] & previous_guessed[j]
+            guess[j] = guess[j] & previous_guess[j]
 
-            if len(guessed[j]) == 1:
+            if len(guess[j]) == 1:
                 count += 1
         
         if count == 16:
             break
 
-        previous_guessed = guessed
+        previous_guess = guess
 
-    guessed = [byte.pop() for byte in guessed]
+    guess = [byte.pop() for byte in guess]
 
-    for guessed_byte in guessed:
-        result = result << 8 | guessed_byte
+    for guess_byte in guess:
+        result = result << 8 | guess_byte
 
     return result
 
@@ -159,28 +159,28 @@ def find_subKey4_test(key):
         raise TypeError("La clé doit être un hexadécimal sur 32 bits.")
     
     result = 0
-    previous_guessed = search_subKey4(secret_enc_delta_test(key, 0))
+    previous_guess = search_subKey4(secret_enc_delta_test(key, 0))
 
     for i in range(1, 100):
         delta_set = secret_enc_delta_test(key, i)
-        guessed = search_subKey4(delta_set)
+        guess = search_subKey4(delta_set)
 
         count = 0
         for i in range(16):
-            guessed[i] = guessed[i] & previous_guessed[i]
+            guess[i] = guess[i] & previous_guess[i]
 
-            if len(guessed[i]) == 1:
+            if len(guess[i]) == 1:
                 count += 1
         
         if count == 16:
             break
 
-        previous_guessed = guessed
+        previous_guess = guess
 
-    guessed = [byte.pop() for byte in guessed]
+    guess = [byte.pop() for byte in guess]
 
-    for guessed_byte in guessed:
-        result = result << 8 | guessed_byte
+    for guess_byte in guess:
+        result = result << 8 | guess_byte
 
     return result
 

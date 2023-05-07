@@ -1,4 +1,4 @@
-from tools import swap_column_row, SubwordReverse, RotwordReverse, MixColumnsReverse_calcul, KeyScheduler
+from tools import swap_column_row, SubwordReverse, RotwordReverse, MixColumnReverse_calcul, KeyScheduler
 from tools import create_state, AddRoundKey, combine_state, ascii_to_hex32
 
 
@@ -31,7 +31,7 @@ def MixColumnsReverse(state):
     result = []
 
     for column in state:
-        mixed = MixColumnsReverse_calcul(column)
+        mixed = MixColumnReverse_calcul(column)
         result.append(mixed)
     
     return result
