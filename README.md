@@ -1,6 +1,6 @@
-# Projet_Crypto_2023
+# Chiffrement par bloc AES128 et Attaque intégrale contre une version réduite de l'AES128
 
-Dans le cadre de notre UE Projet, nous avons dû implémenter l'AES128 afin de faire une attaque intégrale.<br />
+Dans le cadre de notre UE de Projet en L3 pour l'année 2023, nous avons dû implémenter l'AES128 afin de faire une attaque intégrale.<br />
 Bien sûr, l'attaque est effectuée sur une version réduite de l'AES, et plus précisément, nous faisons une attaque sur l'AES à 4 tours.
 
 **Version de Python utilisée : Python 3.10**
