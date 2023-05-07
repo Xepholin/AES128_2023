@@ -1,6 +1,6 @@
 # Projet_Crypto_2023
 
-Dans le cadre de notre UE Projet, nous avons dû implémenté l'AES128 afin de faire une attaque intégrale.
+Dans le cadre de notre UE Projet, nous avons dû implémenté l'AES128 afin de faire une attaque intégrale.<br />
 Bien-sûr, l'attaque est effectué sur une version réduite de l'AES, et plus précisément, nous faisons une attaque sur l'AES à 4 tours.
 
 **Version de Python utilisée : Python 3.10**
@@ -21,8 +21,8 @@ Sinon pour l'usage:
 
     Pour l'attaque:
         python src/main.py attack
-    L'attaque utilise la clé secrète présent dans le fichier settings.py, si vous voulez la modifier, changer simplement la valeur de la variable "secret_key" à la ligne 8.
+L'attaque utilise la clé secrète présent dans le fichier ``settings.py``, si vous voulez la modifier, changer simplement la valeur de la variable "secret_key" à la ligne 8.
 
 
-Lien du répertoire Github: https://github.com/Xepholin/AES128_2023
+<ins>Lien du répertoire Github: https://github.com/Xepholin/AES128_2023<ins>
 
