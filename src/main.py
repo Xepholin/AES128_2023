@@ -1,9 +1,9 @@
 import settings
 
-from tools import conv_msg_key, hex32_to_ascii
-from encrypt import encrypt
-from decrypt import decrypt
-from square import square4
+from tools import ConvMsgKey, Hex32ToAscii
+from encrypt import Encrypt
+from decrypt import Decrypt
+from square import Square4
 
 import argparse
 
@@ -48,20 +48,20 @@ if __name__ == "__main__":
 
     match args.actions:
         case "encrypt":
-            message, key = conv_msg_key(args.message, args.key)
-            result = encrypt(message, key)
+            message, key = ConvMsgKey(args.message, args.key)
+            result = Encrypt(message, key)
             if args.ascii:
-                result = hex32_to_ascii(int(result, 16))
+                result = Hex32ToAscii(int(result, 16))
 
         case "decrypt":
-            message, key = conv_msg_key(args.message, args.key)
-            result = decrypt(message, key)
+            message, key = ConvMsgKey(args.message, args.key)
+            result = Decrypt(message, key)
             if args.ascii:
-                result = hex32_to_ascii(int(result, 16))
+                result = Hex32ToAscii(int(result, 16))
 
         case "attack":
             settings.init()
-            result = square4()
+            result = Square4()
             
         case _:
             raise ValueError()

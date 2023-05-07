@@ -3,7 +3,7 @@ from constants import MULTIPLICATION_BY_1, MULTIPLICATION_BY_2, MULTIPLICATION_B
 from constants import MULTIPLICATION_BY_9, MULTIPLICATION_BY_11, MULTIPLICATION_BY_13, MULTIPLICATION_BY_14
 
 
-def ascii_to_hex32(word):
+def AsciiToHex32(word):
 
     """
     Conversion d'une chaîne de caractères ASCII en un entier équivalent à un hexadécimal contenant 32 bits.
@@ -29,7 +29,7 @@ def ascii_to_hex32(word):
     return hexaWord
 
 
-def hex32_to_ascii(hexa):
+def Hex32ToAscii(hexa):
 
     """
     Conversion d'un entier équivalent à un hexadécimal contenant 32 bits ou moins, en une chaîne de caractères ASCII.
@@ -53,7 +53,7 @@ def hex32_to_ascii(hexa):
     return result
 
 
-def str_to_hex32(word):
+def StrToHex32(word):
 
     """
     Conversion d'une chaîne de caractères en un entier équivalent à un hexadécimal contenant 32 bits.
@@ -81,7 +81,7 @@ def str_to_hex32(word):
 
 
 
-def conv_msg_key(message, key):
+def ConvMsgKey(message, key):
 
     """
     Conversion de 2 chaînes de caractères en fonction de leur taille.
@@ -102,10 +102,10 @@ def conv_msg_key(message, key):
 
     if type(message) != int:
         if len(message) == 16:
-            message = ascii_to_hex32(message)
+            message = AsciiToHex32(message)
     if type(key) != int:
         if len(key) == 16:
-            key = ascii_to_hex32(key)
+            key = AsciiToHex32(key)
     
     return message, key
 
@@ -258,7 +258,7 @@ def KeyScheduler(key):
     """
 
     if type(key) == str:
-        key = str_to_hex32(key)
+        key = StrToHex32(key)
     if type(key) == int:
         if key > 2**128:
             raise ValueError("L'entier est supérieur à un hexadécimal contenant 32 bits.")
@@ -284,7 +284,7 @@ def KeyScheduler(key):
     return subkeys
 
 
-def create_state(word):
+def CreateState(word):
 
     """
     Créer un état (liste de 4 entiers, équivalent à un hexadécimal 0xffffffff), en fonction de l'entrée.
@@ -305,7 +305,7 @@ def create_state(word):
 
     if type(word) == str:
         if len(word) == 16:
-            word = ascii_to_hex32(word)
+            word = AsciiToHex32(word)
         elif len(word) == 32:
             word = int(word, 16)
         else:
@@ -327,7 +327,7 @@ def create_state(word):
     return state
 
 
-def combine_state(state):
+def CombineState(state):
 
     """
     Fusionne les entiers de l'état pour créer un entier.
@@ -355,7 +355,7 @@ def combine_state(state):
     return combine
 
 
-def swap_column_row(state):
+def SwapColumnRow(state):
 
     """
     Inverse les colonnes avec les lignes d'un état.
@@ -392,7 +392,7 @@ def swap_column_row(state):
     return rows
 
 
-def MixColumn_calcul(column):
+def MixColumnCalcul(column):
 
     """
     Effectue les calculs pour un MixColumn.
@@ -443,7 +443,7 @@ def MixColumn_calcul(column):
     return result
 
 
-def MixColumnReverse_calcul(column):
+def MixColumnReverseCalcul(column):
 
     """
     Effectue les calculs pour un MixColumn inversé afin de retrouver l'entier avant le MixColumn.
@@ -519,7 +519,7 @@ def AddRoundKey(state, roundKey):
     if roundKey > 2**128:
         raise ValueError("L'entrée est supérieur à un hexadécimal contenant 32 bits.")
 
-    word = combine_state(state)
-    result = create_state(word ^ roundKey)
+    word = CombineState(state)
+    result = CreateState(word ^ roundKey)
 
     return result

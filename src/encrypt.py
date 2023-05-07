@@ -1,5 +1,5 @@
-from tools import Subword, swap_column_row, Rotword, MixColumn_calcul, KeyScheduler, AddRoundKey
-from tools import create_state, combine_state, ascii_to_hex32
+from tools import Subword, SwapColumnRow, Rotword, MixColumnCalcul, KeyScheduler, AddRoundKey
+from tools import CreateState, CombineState, AsciiToHex32
 
 
 def SubBytes(state):
@@ -50,7 +50,7 @@ def ShiftRow(state):
             if value > 2**32:
                 raise ValueError("L'entier stocké dans la liste doit être un entier sous forme d'un hexadécimal contenant 8 bits")
 
-    rows = swap_column_row(state)
+    rows = SwapColumnRow(state)
 
     rowState = []
     rotate_times = 0
@@ -63,7 +63,7 @@ def ShiftRow(state):
         rowState.append(rotated)
         rotate_times += 1
     
-    return swap_column_row(rowState)
+    return SwapColumnRow(rowState)
 
 
 def MixColumns(state):
@@ -72,7 +72,7 @@ def MixColumns(state):
     Effectue l'opération de MixColumn sur chaque colonne de l'état.
     Entrée : List[Int][4]
     Sortie : List[Int][4]
-    Le calcul est effectué avec l'aide de la fonction MixColumn_calcul, qui est décrite dans le fichier tools.py.
+    Le calcul est effectué avec l'aide de la fonction MixColumnCalcul, qui est décrite dans le fichier tools.py.
     """
 
     if type(state) != list:
@@ -87,13 +87,13 @@ def MixColumns(state):
     result = []
 
     for column in state:
-        mixed = MixColumn_calcul(column)
+        mixed = MixColumnCalcul(column)
         result.append(mixed)
     
     return result
 
 
-def encrypt(message, key):
+def Encrypt(message, key):
 
     """
     Chiffre le message avec la clé en utilisant le chiffrement AES(128).
@@ -107,7 +107,7 @@ def encrypt(message, key):
 
     if type(message) == str:
         if len(message) == 16:
-            message = ascii_to_hex32(message)
+            message = AsciiToHex32(message)
         elif len(message) == 32:
             message = int(message, 16)
         else:
@@ -120,7 +120,7 @@ def encrypt(message, key):
     
     if type(key) == str:
         if len(key) == 16:
-            key = ascii_to_hex32(key)
+            key = AsciiToHex32(key)
         elif len(key) == 32:
             key = int(key, 16)
         else:
@@ -134,7 +134,7 @@ def encrypt(message, key):
     state = message ^ key
 
     subKeys = KeyScheduler(key)
-    state = create_state(state)
+    state = CreateState(state)
 
     for i in range(1, 10):
         state = SubBytes(state)
@@ -146,10 +146,10 @@ def encrypt(message, key):
     state = ShiftRow(state)
     state = AddRoundKey(state, subKeys[10])
 
-    return hex(combine_state(state))[2:]
+    return hex(CombineState(state))[2:]
 
 
-def encryptWithRounds(message, key, numberOfRound):
+def EncryptWithRounds(message, key, numberOfRound):
 
     """
     Chiffre le message avec la clé en utilisant le chiffrement AES(128) avec un certain nombre de tours.
@@ -162,7 +162,7 @@ def encryptWithRounds(message, key, numberOfRound):
     """
 
     if type(message) == str:
-        message = ascii_to_hex32(message)
+        message = AsciiToHex32(message)
     if type(message) == int:
         if message > 2**128:
             raise ValueError("Le bloc de lettres du message fait plus de 16 caractères.")
@@ -170,7 +170,7 @@ def encryptWithRounds(message, key, numberOfRound):
         TypeError("Le type de la variable du message n'est pas bon, str ou int seulement")
     
     if type(key) == str:
-        key = ascii_to_hex32(key)
+        key = AsciiToHex32(key)
     if type(key) == int:
         if key > 2**128:
             raise ValueError("Le bloc de lettres de la clé fait plus de 16 caractères.")
@@ -180,7 +180,7 @@ def encryptWithRounds(message, key, numberOfRound):
     state = message ^ key
 
     subKeys = KeyScheduler(key)
-    state = create_state(state)
+    state = CreateState(state)
 
     for i in range(1, numberOfRound):
         state = SubBytes(state)
@@ -192,4 +192,4 @@ def encryptWithRounds(message, key, numberOfRound):
     state = ShiftRow(state)
     state = AddRoundKey(state, subKeys[numberOfRound])
 
-    return hex(combine_state(state))[2:]
+    return hex(CombineState(state))[2:]
