@@ -10,8 +10,10 @@ def SubBytesReverse(state):
                                                         01 05 09 0e
                                                         02 06 0a 0d
                                                         03 07 0b 0f
+    
     Entrée : List[Int][4]
     Sortie : List[Int][4]
+
     La fonction est décrite dans le fichier tools.py
     """
 
@@ -26,8 +28,10 @@ def ShiftRowReverse(state):
 
     """
     Applique l'opération de rotation vers la droite pour chaque ligne.
+
     Entrée : List[Int][4]
     Sortie : List[Int][4]
+
     En fonction de la ligne, le nombre de rotation sera différent.
     L1 -> 0 rotation / L2 -> 1 rotation / L3 -> 2 rotation / L4 -> 3 rotation
     """
@@ -52,8 +56,10 @@ def MixColumnsReverse(state):
 
     """
     Effectue l'opération de MixColumn inverse sur chaque colonne de l'état.
+
     Entrée : List[Int][4]
     Sortie : List[Int][4]
+
     Le calcul est effectué avec l'aide de la fonction MixColumnReverseCalcul, qui est décrite dans le fichier tools.py.
     """
 
@@ -70,8 +76,10 @@ def Decrypt(message, key):
 
     """
     Déchiffre le message avec la clé, où le message a été chiffré avec le chiffrement AES(128) sur 10 tours.
+
     Entrée : Str|Int, Str|Int
     Sortie : Str
+    
     Le message et la clé en entrée peuvent être un entier, sous la forme d'un hexadécimal sur 32 bits ou moins, ou bien son équivalent en chaîne de caractères.
     La conversion des chaînes de caractères en entier se fera en fonction de la taille de la chaîne (16 ou 32) 
     En sortie de fonction, nous aurons une chaîne de caractères, qui est la représentation en hexadécimal du résultat du déchiffrement.

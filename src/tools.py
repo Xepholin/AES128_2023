@@ -7,8 +7,10 @@ def AsciiToHex32(word):
 
     """
     Conversion d'une chaîne de caractères ASCII en un entier équivalent à un hexadécimal contenant 32 bits.
+
     Entrée : String
     Sortie : Int
+
     La fonction prend des caractères 1 par 1 afin de créer 1 byte, puis ajoute l'équivalent en entier dans la variable de retour.
     S'il n'y a pas assez de caractère pour former un entier de cette forme, les bytes restants sont égaux au caractère 'z' ASCII.
 
@@ -33,8 +35,10 @@ def Hex32ToAscii(hexa):
 
     """
     Conversion d'un entier équivalent à un hexadécimal contenant 32 bits ou moins, en une chaîne de caractères ASCII.
+
     Entrée : Int
     Sortie : String
+
     La fonction prend des entier 2 par 2 (hexa) afin de créer 1 caractère, puis ajoute l'équivalent en ASCII dans la variable de retour.
 
     Exemple : 0x616263 -> "abc"
@@ -57,8 +61,10 @@ def StrToHex32(word):
 
     """
     Conversion d'une chaîne de caractères en un entier équivalent à un hexadécimal contenant 32 bits.
+
     Entrée : String
     Sortie : Int
+
     La fonction prend des caractères 1 par 1 afin de créer 1 byte, puis ajoute l'équivalent en entier dans la variable de retour.
     S'il n'y a pas assez de caractère pour former un entier de cette forme, les bytes restants sont égaux au caractère '0'.
 
@@ -85,8 +91,10 @@ def ConvMsgKey(message, key):
 
     """
     Conversion de 2 chaînes de caractères en fonction de leur taille.
+
     Entrée : String, String
     Sortie : Int, Int
+
     La fonction vérifie en premier la taille pour 32, puis pour 16.
     Dans le cas où la taille est de 32, la chaîne de caractères représente un entier équivalent à un hexadécimal contenant 32 bits.
     Dans le cas où la taille est de 16, la chaîne de caractères possède des caractères ASCII.
@@ -114,8 +122,10 @@ def Rotword(word):
 
     """
     Rotation vers la gauche d'un entier équivalent à un hexadécimal contenant 8 bits ou moins.
+
     Entrée : Int
     Sortie : Int
+
     La fonction transforme et rempli l'entier en une chaîne de caractère de taille 32, avec des '0' vers la gauche, si besoin.
     Créer une nouvelle chaîne de caractère en fusionnant les 6 derniers caractères et les 2 premiers caractères.
 
@@ -135,8 +145,10 @@ def RotwordReverse(word):
 
     """
     Rotation vers la droite d'un entier équivalent à un hexadécimal contenant 8 bits ou moins.
+
     Entrée : Int
     Sortie : Int
+
     La fonction transforme et rempli l'entier en une chaîne de caractère de taille 32, avec des '0' vers la gauche, si besoin.
     Créer une nouvelle chaîne de caractère en fusionnant les 2 derniers caractères et les 6 premiers caractères.
 
@@ -156,10 +168,12 @@ def Subword(word):
 
     """
     Substitution des caractères d'un entier, équivalent à un hexadécimal contenant 8 bits ou moins, en fonction de la table de substitution.
+
     Entrée : Int
     Sortie : Int
-    La fonction scinde le mot en 4 parties de même taille, puis pour chaque partie, trouve la valeur dans la table en fonction.
-    La valeur a cherché est trouvé en fonction des 4 premiers bits et les 4 derniers de l'entier scindé.
+
+    La fonction scinde le mot en 4 parties de taille 8 bits, puis pour chaque partie, trouve la valeur dans la table.
+    La valeur a cherché est trouvé en fonction des 4 premiers bits et les 4 derniers de l'entier scindé, où la 1ère correspond aux lignes et la 2e correspond aux colonnes.
     Fusionne ensuite toutes les partie qui ont été substitué.
 
     Exemple : 0x01234567 -> 0x7c266e85
@@ -190,10 +204,12 @@ def SubwordReverse(word):
 
     """
     Substitution inverse des caractères d'un entier, équivalent à un hexadécimal contenant 8 bits ou moins, en fonction de la table de substitution.
+
     Entrée : Int
     Sortie : Int
-    La fonction scinde le mot en 4 parties de même taille, puis pour chaque partie, trouve la valeur dans la table en fonction.
-    La valeur a cherché est trouvé en fonction des 4 premiers bits et les 4 derniers de l'entier scindé.
+
+    La fonction scinde le mot en 4 parties de taille 8 bits, puis pour chaque partie, trouve la valeur de l'indice ligne et colonne dans la table.
+    La valeur a cherché est trouvé avec l'aide des 4 premiers bits et les 4 derniers de l'entier scindé, où la 1ère correspond aux lignes et la 2e correspond aux colonnes.
     Fusionne ensuite toutes les partie qui ont été substitué.
 
     Exemple : 0x7c266e85 -> 0x01234567
@@ -224,9 +240,11 @@ def Rcon(i):
 
     """
     Trouve une valeur en fonction de l'entrée.
+
     Entrée : Int
     Sortie : List[Int][4]
-    La fonction renvoie une liste de taille 4 contenant en index 0, la valeur de la table en fonction de l'entrée, puis 0 dans les autres index.
+
+    La fonction renvoie une liste de taille 4 contenant en indice 0, la valeur de la table en fonction de l'entrée, puis 0 dans les autres indice.
 
     Exemple : 0 -> [0x8d, 0, 0, 0]
     """
@@ -238,8 +256,10 @@ def KeyScheduler(key):
 
     """
     Créer une liste contenant toutes les sous-clés de l'expansion de clé.
+
     Entrée : Int|Str
     Sortie : List[Int][11]
+
     La fonction prend en entrée un entier, équivalent à un hexadécimal contenant 32 bits ou moins, ou une chaîne de caractère, qui va être convertit par la suite.
     Elle effectue ensuite les calculs afin de déterminer chaque sous-clé de chaque tour.
 
@@ -296,9 +316,11 @@ def CreateState(word):
 
     L'entrée peut être un entier, équivalent à un hexadécimal de 32 bits ou moins, ou une chaîne de caractère de taille 16 ou 32.
     La conversion en entier est effectué en fonction de la taille de la chaîne de caractère, 16 pour ASCII.
+
     Entrée : Int|Str
     Sortie : List[Int][4]
-    La fonction renvoie une liste de taille 4 où chaque index contient un entier équivalent à un hexadécimal contenant 8 bits ou moins.
+
+    La fonction renvoie une liste de taille 4 où chaque indice contient un entier équivalent à un hexadécimal contenant 8 bits ou moins.
 
     Exemple : 0x000102030405060708090a0b0c0d0e0f -> [0x00010203, 0x04050607, 0x08090a0b, 0x0c0d0e0f]
     """
@@ -332,6 +354,7 @@ def CombineState(state):
     """
     Fusionne les entiers de l'état pour créer un entier.
     L'entrée doit être une liste de taille 4, contenant des entiers équivalent à un hexadécimal de 8 bits ou moins.
+
     Entrée : List[Int]
     Sortie : Int
 
@@ -360,6 +383,7 @@ def SwapColumnRow(state):
     """
     Inverse les colonnes avec les lignes d'un état.
     La liste doit être une liste de taille 4, contenant des entiers équivalent à un hexadécimal de 8 bits ou moins.
+
     Entrée : List[Int]
     Sortie : List[Int]
 
@@ -397,8 +421,10 @@ def MixColumnCalcul(column):
     """
     Effectue les calculs pour un MixColumn.
     L'entrée est un entier équivalent à un hexadécimal de 8 bits, cette entier est une colonne de l'état.
+
     Entrée : Int
     Sortie : Int
+
     La fonction utilise des listes contenant le résultat des différents multiplications à utiliser durant le MixColumn.
 
     Exemple : 0x00010203 -> 0x02070005
@@ -448,8 +474,10 @@ def MixColumnReverseCalcul(column):
     """
     Effectue les calculs pour un MixColumn inversé afin de retrouver l'entier avant le MixColumn.
     L'entrée est un entier équivalent à un hexadécimal de 8 bits, cette entier est une colonne de l'état.
+
     Entrée : Int
     Sortie : Int
+
     La fonction utilise des listes contenant le résultat des différents multiplications à utiliser durant le MixColumn inversé.
     
     Exemple : 0x02070005 -> 0x00010203
@@ -501,6 +529,7 @@ def AddRoundKey(state, roundKey):
     """
     Effectue un XOR entre l'état et la clé passée en argument.
     Les entrées sont un état, qui une liste de 4 entiers, et un entier, équivalent à un hexadécimal de 32 bits.
+    
     Entrée : List[Int], Int
     Sortie : List[Int]
     
