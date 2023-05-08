@@ -3,7 +3,7 @@
 Dans le cadre de notre UE de Projet en L3 pour l'année 2023, nous avons dû implémenter l'AES128 afin de faire une attaque intégrale.<br />
 Bien sûr, l'attaque est effectuée sur une version réduite de l'AES, et plus précisément, nous faisons une attaque sur l'AES à 4 tours.
 
-**Version de Python utilisée : Python 3.10**
+<ins>**Version de Python utilisée : Python 3.10**<ins>
 
 Les fonctions possèdent toute une description placée dans chacun d'entre eux.
 Un Makefile est disponible pour faire les commandes par défaut, utiliser la commande ``make``.
@@ -23,7 +23,8 @@ Sinon, pour l'utilisation du programme:
 
     Pour l'attaque:
         python src/main.py attack
-        
+
+Vous pouvez rajouter ``-as`` afin d'avoir le résultat sous format ASCII dans le cas d'un chiffrement ou d'un déchiffrement.<br />
 L'attaque utilise la clé secrète présente dans le fichier ``settings.py``, si vous voulez la modifier, changer simplement la valeur de la variable "secret_key" à la ligne 8.<br />
 
 La clé secrète doit être un entier, équivalent à un hexadécimal possédant 32 bits ou moins, vous pouvez prendre comme exemple les clés ci-dessous, qui sont des clés possibles:

@@ -50,20 +50,24 @@ if __name__ == "__main__":
         case "encrypt":
             message, key = ConvMsgKey(args.message, args.key)
             result = Encrypt(message, key)
+
+            print("Chiffrement:", result)
             if args.ascii:
-                result = Hex32ToAscii(int(result, 16))
+                print("ASCII:", Hex32ToAscii(int(result, 16)))
 
         case "decrypt":
             message, key = ConvMsgKey(args.message, args.key)
             result = Decrypt(message, key)
+
+            print("Déchiffrement:", result)
             if args.ascii:
-                result = Hex32ToAscii(int(result, 16))
+                print("ASCII:", Hex32ToAscii(int(result, 16)))
 
         case "attack":
             settings.init()
             result = Square4()
             
+            print(result)
+            
         case _:
             raise ValueError()
-        
-    print(result)
